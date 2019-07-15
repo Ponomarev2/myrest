@@ -1,0 +1,168 @@
+<html>
+  <head>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.0.2/tablesort.min.js"></script>
+	 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  </head>
+  <body>
+  <style>
+BODY {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #EEE;
+  font-family: Georgia;
+  }
+ table{border: 1px solid #000000;}
+thead{border: 2.1px solid #000000;}
+tr:hover {background-color: deeppink;}
+th, td {
+  border: 0.5px solid #000000;
+  font-size:16pt;
+  padding: 15px;
+  text-align: left;
+}
+caption {
+font-size:24pt;
+  text-shadow: 1px 1px white,
+               2px 2px #777;
+  color: #333;
+  transition: all 1s;
+  }
+  caption:hover {
+    text-shadow: 1px 1px white,
+                 2px 2px black;
+    color: deeppink;
+    }
+</style>
+<div>
+<form style="position: absolute;top: 10%; left: 20%;">
+    <input type="text" id="id" title="Введите id" placeholder="id">
+    <button id="shirts" type='button' >Удалить предмет</button>
+</form>
+
+<form style="position: absolute;top: 20%; left: 20%;">
+    <input type="text" id="name" title="Введите имя" placeholder="Имя">
+    <input type="text" id="surname" title="Введите фамилию" placeholder="Фамилия"><i style="color:deeppink"> Или </i>
+    <input type="text" id="number" title="Введите Номер зачетки" placeholder="Номер зачетки">
+    <button id="socks" type='button' >Увидеть оценки</button>
+</form>
+<form style="position: absolute;top: 30%; left: 20%;">
+    <input type="text" id="fi" title="Введите имя и фамилию" placeholder="Имя и фамилия">
+    <input type="text" id="title" title="Введите название предмета" placeholder="Название предмета">
+    <input type="text" id="mark" title="Введите оценку" placeholder="Оценка">
+    <input type="text" id="marknote_number" title="Введите номер зачетки" placeholder="Номер зачетки">
+    <button id="pants" type='button' >Добавить предмет</button>
+</form>
+
+<form style="position: absolute;top: 40%; left: 20%;">
+	<input type="text" id="id_to_change" title="Введите id" placeholder="id">
+    <input type="text" id="new_fi" title="Введите имя и фамилию" placeholder="Имя и фамилия">
+    <input type="text" id="new_title" title="Введите название предмета" placeholder="Название предмета">
+    <input type="text" id="new_mark" title="Введите оценку" placeholder="Оценка">
+    <input type="text" id="new_marknote_number" title="Введите номер зачетки" placeholder="Номер зачетки">
+    <button id="skirts" type='button' >Изменить предмет</button>
+	<p></p>
+	<div><table style="width: 1000px;" id='response'><table></div>
+</form>
+</div>
+
+
+  </body>
+  <script>
+   function doFunctionChange(){
+		var uri = 'http://127.0.0.1:5000/';
+		var idch = document.getElementById("id_to_change").value;
+		var new_fi = document.getElementById("new_fi").value;
+		var new_title = document.getElementById("new_title").value;
+		var new_marknote_number = document.getElementById("new_marknote_number").value;
+		var new_mark = document.getElementById("new_mark").value;
+		uri += idch;
+		
+		xhr = new XMLHttpRequest();
+		xhr.open("PUT", uri, true);
+		xhr.setRequestHeader("Content-type", "application/json");
+		var data = JSON.stringify({"title": new_title,"student_name": new_fi,"mark": new_mark, "marknote_number": new_marknote_number});
+		xhr.send(data);
+		}
+    function doFunctionDelete(){
+		var uri = 'http://127.0.0.1:5000/';
+		var idz = document.getElementById("id").value;
+		uri += idz;
+		//document.write(uri);
+		xhr = new XMLHttpRequest();
+		xhr.open("DELETE", uri, true);
+		xhr.send();
+		}
+	function doFunctionPost(){
+		var uri = 'http://127.0.0.1:5000/subjects';
+		var fi = document.getElementById("fi").value;
+		var title = document.getElementById("title").value;
+		var number = document.getElementById("number").value;
+		var mark = document.getElementById("mark").value;
+		
+		xhr = new XMLHttpRequest();
+		xhr.open("POST", uri, true);
+		xhr.setRequestHeader("Content-type", "application/json");
+		var data = JSON.stringify({"title":title,"student_name":fi,"mark": mark, "marknote_number": marknote_number});
+		xhr.send(data);
+		}
+	function doFunctionGet(){
+		var uri = 'http://127.0.0.1:5000/';
+		if (document.getElementById("number").value != null){
+			var number = document.getElementById("number").value;
+			uri += number;
+			}
+		if (uri == 'http://127.0.0.1:5000/'){ 
+			uri += 'subjects';
+			}
+		var name = document.getElementById("name").value;
+		var surname = document.getElementById("surname").value;
+		var f = 0;
+		if (name == 0) {
+			f = 1;
+		}
+		//document.write(name+surname);
+		var request = new XMLHttpRequest();	
+		request.addEventListener("readystatechange", processRequest, false);
+		request.open('GET', uri, true);
+		request.send();
+		function processRequest(e){
+				if (request.readyState == 4 && request.status == 200){
+					var response = JSON.parse(request.responseText);
+					if (response.length > 0){
+						myobj.subjects[0].title;
+						//document.write(myobj.subjects[0].title);
+					}
+					else if (request.readyState == 4){
+						var html = "";
+						html += "<caption>"+'Ведомость успеваемости'+"</caption>";
+						html += "<thead>";
+						html += '<tr>';
+						html += "<th>"+'Название предмета'+"</th>";
+						html += "<th>"+'Оценка'+"</th>";
+						html += "</tr>";
+						html += "</thead>";
+                        for (var i = 0; i < response.subjects.length; i++) {
+							if (response.subjects[i].student_name == name + " " + surname || f == 1){
+								html += '<tr>';
+								html += "<td>" + response.subjects[i].title + "</td>";
+								html += '<td>' + response.subjects[i].mark + '</td>';
+								html += '</tr>'
+								}
+                        }
+                        document.getElementById('response').innerHTML = html;
+					}
+				} 
+			
+			}
+		}
+	document.getElementById("socks").onclick = doFunctionGet;
+	document.getElementById("pants").onclick = doFunctionPost;
+	document.getElementById("shirts").onclick = doFunctionDelete;
+	document.getElementById("skirts").onclick = doFunctionChange;
+  </script>
+  <script>new Tablesort(document.getElementById('response'));</script>
+</html>

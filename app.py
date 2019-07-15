@@ -128,6 +128,9 @@ def get_subjects():
     return jsonify({'subjects': subjects})
 
 
+@app.route('/')
+def index():
+    return render_template("new.html")
 
 
 if __name__ == '__main__':
